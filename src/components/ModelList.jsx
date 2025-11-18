@@ -1,27 +1,42 @@
 import { useEffect, useState } from 'react'
 
 function ModelCard({ m }) {
+  const avatar = m.photos && m.photos.length > 0 ? m.photos[0] : null
   return (
-    <div className="bg-slate-800/60 border border-white/10 rounded-xl p-5 hover:border-blue-400/40 transition-colors">
-      <div className="flex items-center gap-3 mb-3">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-500/40 to-fuchsia-500/40 grid place-items-center text-white font-semibold">
-          {m.name?.slice(0,1)?.toUpperCase()}
-        </div>
-        <div>
-          <h3 className="text-white font-semibold">{m.name}</h3>
-          <p className="text-blue-200/80 text-sm">{m.city} • {m.experience_years || 0} yrs exp</p>
-        </div>
-      </div>
-      {m.skills && m.skills.length>0 && (
-        <div className="flex flex-wrap gap-1.5">
-          {m.skills.map((s, i) => (
-            <span key={i} className="text-xs text-blue-300/90 bg-blue-500/10 px-2 py-0.5 rounded">{s}</span>
-          ))}
+    <div className="group bg-slate-800/60 border border-white/10 rounded-xl overflow-hidden hover:border-blue-400/40 transition-all">
+      {avatar && (
+        <div className="h-36 w-full bg-cover bg-center" style={{ backgroundImage: `url(${avatar})` }}>
+          <div className="h-full w-full bg-gradient-to-t from-slate-950/80 to-transparent"></div>
         </div>
       )}
+      <div className="p-5">
+        <div className="flex items-center gap-3 mb-3">
+          {!avatar && (
+            <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-500/40 to-fuchsia-500/40 grid place-items-center text-white font-semibold">
+              {m.name?.slice(0,1)?.toUpperCase()}
+            </div>
+          )}
+          <div>
+            <h3 className="text-white font-semibold leading-tight">{m.name}</h3>
+            <p className="text-blue-200/80 text-sm">{m.city} • {m.experience_years || 0} yrs exp • {m.hourly_rate ? `$${m.hourly_rate}/hr` : 'rate on request'}</p>
+          </div>
+        </div>
+        {m.bio && (
+          <p className="text-blue-100/90 text-sm mb-3 line-clamp-2">{m.bio}</p>
+        )}
+        {m.skills && m.skills.length>0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {m.skills.slice(0,5).map((s, i) => (
+              <span key={i} className="text-xs text-blue-300/90 bg-blue-500/10 px-2 py-0.5 rounded">{s}</span>
+            ))}
+            {m.skills.length > 5 && (
+              <span className="text-xs text-blue-300/70">+{m.skills.length - 5}</span>
+            )}
+          </div>
+        )}
+      </div>
     </div>
-  )
-}
+  )}
 
 export default function ModelList({ backend }) {
   const [models, setModels] = useState([])
